@@ -1,0 +1,138 @@
+@hostname = http://127.0.0.1
+@port = 5000
+@host = {{hostname}}:{{port}}
+@Authorization = IjI1Zjc1NjRiN2NkMTQyYTY5MjlhMTMzZTkzODRlYzU2Ig.YFI30g.yNCajtuI6kwYj65OiHT5KGsxya0
+
+
+### Init
+get {{host}} HTTP/1.1
+content-type: application/json
+
+
+### Chat
+post  {{host}}/chat HTTP/1.1
+content-type: application/json
+
+{
+    "say": "what ingredients am i most likely to use"
+}
+
+    # "say": "why do people prefer cooking at home?"
+
+### Create Index
+post {{host}}/index HTTP/1.1
+content-type: application/json
+
+
+### Add Training
+post  {{host}}/training HTTP/1.1
+content-type: application/json
+
+{
+    "question": "qqq?",
+    "answer": "aaa"
+}
+
+
+
+
+### Get DB
+get {{host}}/training HTTP/1.1
+content-type: application/json
+
+###
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Init
+get {{host}}/blog HTTP/1.1
+content-type: application/json
+
+###
+
+
+### Init
+get {{host}}/project HTTP/1.1
+content-type: application/json
+
+###
+
+### Init
+get {{host}}/blog_project HTTP/1.1
+content-type: application/json
+
+###
+
+###
+
+### Init
+get {{host}}/blog/eee HTTP/1.1
+content-type: application/json
+
+###
+
+
+### Init
+get {{host}}/project/eee HTTP/1.1
+content-type: application/json
+
+###
+
+
+### Init
+get {{host}}/fix HTTP/1.1
+content-type: application/json
+
+###
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Init
+post https://staging-api-test.kwik.delivery/vendor_login HTTP/1.1
+content-type: application/json
+
+{
+    "domain_name": "staging-client-panel.kwik.delivery",
+    "email": "theophilus.ogbolu@gmail.com",
+    "password": "thehipsoul",
+    "api_login" :1
+}
+###
+
+### Init
+post https://staging-api-test.kwik.delivery/vendor_login HTTP/1.1
+content-type: application/json
+
+{
+    "domain_name": "staging-client-panel.kwik.delivery",
+    "email": "theophilus.ogbolu@gmail.com",
+    "password": "thehipsoul",
+    "api_login" :1
+}
+###
+
+#Fix
+post  {{host}}/fix HTTP/1.1
+content-type: application/json
+
+###

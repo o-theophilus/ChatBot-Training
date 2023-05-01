@@ -1,0 +1,32 @@
+
+:root,
+textarea,
+select,
+input,
+button {
+	font-family: 'Courier New', monospace;
+	font-size: small;
+}
+
+
+
+* {
+	line-height: 150%;
+
+	box-sizing: border-box;
+	outline: none;
+	-webkit-tap-highlight-color: transparent;
+}
+
+
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+	transition: background-color 9999s;
+	-webkit-text-fill-color: var(--accent1);
+}
+
+
+
