@@ -10,6 +10,7 @@ flask = "*"
 flask-cors = "*"
 python-dotenv = "*"
 deta = "*"
+flask-webpack = "*"
 
 [dev-packages]
 flake8 = "*"

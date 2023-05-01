@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_webpack import Webpack
 
 from .api import bp as api
 from .api.chat import bp as chat
@@ -11,6 +12,7 @@ def create_app(config_file="config.py"):
     app = Flask(__name__)
     app.config.from_pyfile(config_file)
     CORS(app)
+    Webpack(app)
 
     app.register_blueprint(api)
     app.register_blueprint(chat)
