@@ -52,17 +52,13 @@ def build_brain(data=None):
     if not data:
         data = db.data()
 
-    training = ""
-
+    training_data = ""
     for row in data:
         if row["type"] == "training":
-            training = f"""
-{training}
-question: {row["question"]}
-answer: {row["answer"]}
-"""
+            training_data = row["data"]
+            break
 
-    brain_data = construct_index(training)
+    brain_data = construct_index(training_data)
     brain = db.get_brain(data)
 
     if brain:

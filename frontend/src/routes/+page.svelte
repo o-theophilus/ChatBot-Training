@@ -2,67 +2,51 @@
 	import { fly } from 'svelte/transition';
 	import { bounceInOut } from 'svelte/easing';
 
-	import '../reset.css';
+	import './style.css';
 	import Boubble from './boubble.svelte';
 
-	let form = {
-		history: []
-	};
-	let error = {
-		openai_api_key: 'You can find your API key at https://platform.openai.com/account/api-keys'
-	};
-
-	let role = `You are a christian priest that adviser, encourages, morivate,
-prays and py arecommends bible verse accorging to the users situation.
-Then ask a follow up question probing further about the persons
-situation`;
+	let message = '';
+	let error = '';
+	let history = [];
 
 	const validate = () => {
-		error = {};
-		if (!form.message) {
-			error.message = 'cannot be empty';
-		}
-		if (!form.openai_api_key) {
-			error.openai_api_key =
-				'cannot be empty, You can find your API key at https://platform.openai.com/account/api-keys';
+		error = '';
+		if (!message) {
+			error = 'cannot be empty';
 		}
 
-		Object.keys(error).length === 0 && submit();
+		!error && submit();
 	};
 
 	const submit = async () => {
-		if (add_role) {
-			form.history.push({
-				role: 'system',
-				content: role
-			});
-		}
-		form.history.push({
+		history.push({
 			role: 'user',
-			content: form.message
+			content: message
 		});
-
-		show_settings = false;
-		add_role = false;
-		form.message = '';
+		history = history;
 		scroll();
+		let temp = message;
+		message = '';
 
 		const resp = await fetch(`${import.meta.env.VITE_API_URL}/chat`, {
 			method: 'post',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(form)
+			body: JSON.stringify({ message: temp })
 		});
 
 		if (resp.ok) {
 			const data = await resp.json();
 
 			if (data.status == 200) {
-				form.history = data.data.history;
+				history.push({
+					role: 'bot',
+					content: data.response
+				});
+				history = history;
 				scroll();
 			} else {
-				show_settings = true;
 				error = data.message;
 			}
 		}
@@ -72,46 +56,12 @@ situation`;
 		chat_area.scrollTop = chat_area.scrollHeight;
 		// chat_area.scrollIntoView({ behavior: 'smooth' });
 	};
-	
-	let show_settings = true;
-	let add_role = true;
 </script>
 
 <section>
-	<h2>Live Demo</h2>
-	<div class="setting_area">
-		{#if show_settings}
-			{#if error.openai_api_key}
-				<span class="error">{error.openai_api_key}</span>
-			{/if}
-			<input
-				id="openai_api_key"
-				type="text"
-				bind:value={form.openai_api_key}
-				placeholder="OpenAI API key"
-			/>
-		{/if}
-		{#if add_role}
-			<br />
-			Chatbot Role:
-			<textarea
-				placeholder="ChatBot Role"
-				id="message"
-				bind:value={role}
-				on:keydown={(e) => {
-					if (e.key === 'Enter') {
-						e.preventDefault();
-						validate();
-					}
-				}}
-			/>
-		{/if}
-	</div>
-
 	<div class="chat_area">
 		<div class="scroller">
-			<Boubble role="assistant">how do you feel?</Boubble>
-			{#each form.history as h}
+			{#each history as h}
 				<div transition:fly|local={{ delay: 0, duration: 200, easing: bounceInOut, y: 100 }}>
 					<Boubble role={h.role}>
 						{h.content}
@@ -122,14 +72,14 @@ situation`;
 	</div>
 
 	<div class="message_area">
-		{#if error.message}
-			<span class="error">{error.message}</span>
+		{#if error}
+			<span class="error">{error}</span>
 		{/if}
 		<div class="user_input">
 			<textarea
 				placeholder="message"
 				id="message"
-				bind:value={form.message}
+				bind:value={message}
 				on:keydown={(e) => {
 					if (e.key === 'Enter') {
 						e.preventDefault();
@@ -151,15 +101,12 @@ situation`;
 		--var1: 20px;
 		--var2: 8px;
 
-		/* margin: auto; */
 		height: 100vh;
-		/* max-width: 600px; */
 		padding: var(--var1);
 	}
 
 	section,
-	.message_area,
-	.setting_area {
+	.message_area {
 		display: flex;
 		flex-direction: column;
 		gap: var(--var2);
@@ -182,7 +129,6 @@ situation`;
 		gap: var(--var2);
 	}
 
-	input,
 	textarea,
 	button {
 		border-radius: var(--var2);
@@ -198,12 +144,7 @@ situation`;
 	}
 
 	button:hover {
-		/* aspect-ratio: 1/1; */
 		background-color: rgb(193, 193, 193);
 		cursor: pointer;
-	}
-
-	.error {
-		color: red;
 	}
 </style>

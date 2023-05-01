@@ -4,8 +4,8 @@ textarea,
 select,
 input,
 button {
-	font-family: 'Courier New', monospace;
-	font-size: small;
+	font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+	font-size: 16px;
 }
 
 
@@ -30,3 +30,6 @@ input:-webkit-autofill:active {
 
 
 
+.error {
+	color: red;
+}
