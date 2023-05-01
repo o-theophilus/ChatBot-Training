@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify
 from datetime import datetime, timedelta
 
+
 bp = Blueprint("api", __name__)
 
 

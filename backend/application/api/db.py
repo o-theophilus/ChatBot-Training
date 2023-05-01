@@ -7,7 +7,14 @@ def base():
 
 
 def data():
-    return base().fetch().items
+    res = base().fetch()
+    items = res.items
+
+    while res.last:
+        res = base().fetch(last=res.last)
+        items += res.items
+
+    return items
 
 
 def get_brain(db=None):
@@ -17,6 +24,17 @@ def get_brain(db=None):
         if "type" in row and row["type"] == "brain":
             return row
     return None
+
+
+def key(key, db=None):
+    if not db:
+        db = data()
+
+    for row in db:
+        if row["key"] == key:
+            return row
+    return None
+
 
 # def get(type_, ppt, val, db=None):
 #     if not db:
@@ -30,14 +48,14 @@ def get_brain(db=None):
 #     return item
 
 
-# def get_type(type_, db=None):
-#     if not db:
-#         db = data()
-#     items = []
-#     for row in db:
-#         if "type" in row and row["type"] == type_:
-#             items.append(row)
-#     return items
+def get_type(type_, db=None):
+    if not db:
+        db = data()
+    items = []
+    for row in db:
+        if "type" in row and row["type"] == type_:
+            items.append(row)
+    return items
 
 
 def add(x):
@@ -48,5 +66,5 @@ def add(x):
 #     return base().put_many(x)
 
 
-# def rem(key):
-#     return base().delete(key)
+def rem(key):
+    return base().delete(key)

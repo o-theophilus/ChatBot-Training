@@ -23,7 +23,14 @@ def post():
         response_mode="compact"
     )
 
-    learn(request.json["say"], response.response)
+    db.add({
+        "key": uuid4().hex,
+        "created_at": now(),
+        "updated_at": now(),
+        "type": "learning",
+        "user": request.json["say"],
+        "bot": response.response
+    })
 
     return jsonify({
         "status": 200,
@@ -31,15 +38,4 @@ def post():
         "data": {
             "response": response.response
         }
-    })
-
-
-def learn(user, bot):
-    db.add({
-        "key": uuid4().hex,
-        "created_at": now(),
-        "updated_at": now(),
-        "type": "learning",
-        "user": user,
-        "bot": bot
     })

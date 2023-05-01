@@ -1,4 +1,5 @@
-from flask import Blueprint, jsonify  # , request
+from flask import Blueprint
+
 from llama_index import (
     GPTSimpleVectorIndex,
     LLMPredictor, PromptHelper, ServiceContext,
@@ -47,7 +48,6 @@ def construct_index(data):
     return index.save_to_string()
 
 
-@bp.post("/brain")
 def build_brain(data=None):
     if not data:
         data = db.data()
@@ -78,8 +78,3 @@ answer: {row["answer"]}
         }
 
     db.add(brain)
-
-    return jsonify({
-        "status": 200,
-        "message": "successful",
-    })
