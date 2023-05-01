@@ -2,33 +2,29 @@
 	import { fly } from 'svelte/transition';
 	import { bounceInOut } from 'svelte/easing';
 
-	import './reset.css';
+	import '../reset.css';
 	import Boubble from './boubble.svelte';
-
-	let system_role = `As a Christian priest chatbot, your role is to provide compassionate guidance, encouragement, motivation, and prayer support to users seeking spiritual guidance. You will also recommend relevant Bible verses based on the user's specific situation.
-Your goal is to create a safe and supportive space for users to explore their spiritual needs and challenges. As such, you will actively listen to users' concerns and ask follow-up questions to gain a deeper understanding of their situation. Through your interactions, you will offer thoughtful insights, personalized advice, and empathetic support to help users navigate their spiritual journeys with grace and confidence.
-With your knowledge of Christian teachings and your dedication to helping others, you will serve as a trusted ally and source of inspiration for those seeking a deeper connection with their faith.`;
-	let key_error = 'You can find your API key at https://platform.openai.com/account/api-keys';
-	let show_settings = true;
-	let add_role = true;
 
 	let form = {
 		history: []
 	};
 	let error = {
-		openai_api_key: key_error
+		openai_api_key: 'You can find your API key at https://platform.openai.com/account/api-keys'
 	};
+
+	let role = `You are a christian priest that adviser, encourages, morivate,
+prays and py arecommends bible verse accorging to the users situation.
+Then ask a follow up question probing further about the persons
+situation`;
 
 	const validate = () => {
 		error = {};
-		if (!form.openai_api_key) {
-			error.openai_api_key = `cannot be empty, ${key_error}`;
-		}
-		if (!system_role) {
-			error.system_role = 'cannot be empty';
-		}
 		if (!form.message) {
 			error.message = 'cannot be empty';
+		}
+		if (!form.openai_api_key) {
+			error.openai_api_key =
+				'cannot be empty, You can find your API key at https://platform.openai.com/account/api-keys';
 		}
 
 		Object.keys(error).length === 0 && submit();
@@ -38,7 +34,7 @@ With your knowledge of Christian teachings and your dedication to helping others
 		if (add_role) {
 			form.history.push({
 				role: 'system',
-				content: system_role
+				content: role
 			});
 		}
 		form.history.push({
@@ -71,17 +67,20 @@ With your knowledge of Christian teachings and your dedication to helping others
 			}
 		}
 	};
-
 	const scroll = () => {
 		const chat_area = document.querySelector('.chat_area');
 		chat_area.scrollTop = chat_area.scrollHeight;
+		// chat_area.scrollIntoView({ behavior: 'smooth' });
 	};
+	
+	let show_settings = true;
+	let add_role = true;
 </script>
 
 <section>
+	<h2>Live Demo</h2>
 	<div class="setting_area">
 		{#if show_settings}
-			<label for="role"> OpenAI API key: </label>
 			{#if error.openai_api_key}
 				<span class="error">{error.openai_api_key}</span>
 			{/if}
@@ -90,25 +89,15 @@ With your knowledge of Christian teachings and your dedication to helping others
 				type="text"
 				bind:value={form.openai_api_key}
 				placeholder="OpenAI API key"
-				on:input={() => {
-					if (form.openai_api_key) {
-						error.openai_api_key = '';
-					} else {
-						error.openai_api_key = key_error;
-					}
-				}}
 			/>
 		{/if}
 		{#if add_role}
 			<br />
-			<label for="role"> ChatBot Role: </label>
-			{#if error.system_role}
-				<span class="error">{error.system_role}</span>
-			{/if}
+			Chatbot Role:
 			<textarea
 				placeholder="ChatBot Role"
-				id="role"
-				bind:value={system_role}
+				id="message"
+				bind:value={role}
 				on:keydown={(e) => {
 					if (e.key === 'Enter') {
 						e.preventDefault();
@@ -161,13 +150,11 @@ With your knowledge of Christian teachings and your dedication to helping others
 	section {
 		--var1: 20px;
 		--var2: 8px;
-		--var3: 80px;
 
+		/* margin: auto; */
 		height: 100vh;
+		/* max-width: 600px; */
 		padding: var(--var1);
-
-		background-color: black;
-		/* background-color: rgb(50, 50, 50); */
 	}
 
 	section,
@@ -182,10 +169,12 @@ With your knowledge of Christian teachings and your dedication to helping others
 		display: flex;
 		flex-direction: column-reverse;
 
+		border-radius: var(--var2);
 		height: 100%;
-		padding: var(--var1) 0;
+		padding: var(--var1) calc(var(--var1) * 2);
 
 		overflow-y: auto;
+		background-color: rgb(207, 207, 207);
 	}
 
 	.user_input {
@@ -193,15 +182,12 @@ With your knowledge of Christian teachings and your dedication to helping others
 		gap: var(--var2);
 	}
 
-	label {
-		color: greenyellow;
-	}
 	input,
-	textarea {
-		border: 2px solid white;
-		padding: var(--var2);
-		color: white;
-		background-color: transparent;
+	textarea,
+	button {
+		border-radius: var(--var2);
+		border: 2px solid gray;
+		padding: var(--var1);
 	}
 
 	textarea {
@@ -211,15 +197,10 @@ With your knowledge of Christian teachings and your dedication to helping others
 		height: 120px;
 	}
 
-	button {
-		cursor: pointer;
-		width: var(--var3);
-		flex-shrink: 0;
-		background-color: white;
-		border: none;
-	}
 	button:hover {
-		background-color: rgb(195, 195, 195);
+		/* aspect-ratio: 1/1; */
+		background-color: rgb(193, 193, 193);
+		cursor: pointer;
 	}
 
 	.error {

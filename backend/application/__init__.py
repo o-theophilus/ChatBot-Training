@@ -3,7 +3,7 @@ from flask_cors import CORS
 
 from .api import bp as api
 from .api.chat import bp as chat
-from .api.index import bp as index
+from .api.brain import bp as brain
 from .api.training import bp as training
 
 
@@ -14,7 +14,7 @@ def create_app(config_file="config.py"):
 
     app.register_blueprint(api)
     app.register_blueprint(chat)
-    app.register_blueprint(index)
+    app.register_blueprint(brain)
     app.register_blueprint(training)
 
     return app

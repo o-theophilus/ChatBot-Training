@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from llama_index import GPTSimpleVectorIndex
-from . import db  # , dd
-# import io
+from . import db, now
+from uuid import uuid4
 
 bp = Blueprint("chat", __name__)
 
@@ -15,15 +15,15 @@ def post():
             "message": "cannot be empty"
         })
 
-    # index = dd.get("index.json")
-    # index = io.BytesIO(index.read()).getvalue().decode('utf-8')
-    index = db.get_type("index")[0]["data"]
-    index = GPTSimpleVectorIndex.load_from_string(index)
+    brain = db.get_brain()["data"]
+    brain = GPTSimpleVectorIndex.load_from_string(brain)
 
-    response = index.query(
+    response = brain.query(
         request.json["say"],
         response_mode="compact"
     )
+
+    learn(request.json["say"], response.response)
 
     return jsonify({
         "status": 200,
@@ -31,4 +31,15 @@ def post():
         "data": {
             "response": response.response
         }
+    })
+
+
+def learn(user, bot):
+    db.add({
+        "key": uuid4().hex,
+        "created_at": now(),
+        "updated_at": now(),
+        "type": "learning",
+        "user": user,
+        "bot": bot
     })

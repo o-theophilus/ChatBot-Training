@@ -5,11 +5,10 @@ from llama_index import (
     download_loader
 )
 from langchain import OpenAI
-from . import db, now  # ,dd
-# import io
+from . import db, now
 from uuid import uuid4
 
-bp = Blueprint("index", __name__)
+bp = Blueprint("brain", __name__)
 
 
 def construct_index(data):
@@ -48,29 +47,37 @@ def construct_index(data):
     return index.save_to_string()
 
 
-@bp.post("/index")
-def post():
+@bp.post("/brain")
+def build_brain(data=None):
+    if not data:
+        data = db.data()
 
-    trainings = db.get_type("training")
-    trainings.reverse()
-    data = ""
+    training = ""
 
-    for x in trainings:
-        data = f"""
-{data}
-question: {x["question"]}
-answer: {x["answer"]}"""
+    for row in data:
+        if row["type"] == "training":
+            training = f"""
+{training}
+question: {row["question"]}
+answer: {row["answer"]}
+"""
 
-    index = construct_index(data)
+    brain_data = construct_index(training)
+    brain = db.get_brain(data)
 
-    # dd.add(io.StringIO(index))
-    db.add({
-        "key": uuid4().hex,
-        "created_at": now(),
-        "updated_at": now(),
-        "type": "index",
-        "data": index
-    })
+    if brain:
+        brain['"updated_at"'] = now()
+        brain['data'] = brain_data
+    else:
+        brain = {
+            "key": uuid4().hex,
+            "created_at": now(),
+            "updated_at": now(),
+            "type": "brain",
+            "data": brain_data
+        }
+
+    db.add(brain)
 
     return jsonify({
         "status": 200,
