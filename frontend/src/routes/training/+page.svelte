@@ -12,19 +12,19 @@
 			error = 'cannot be empty';
 		}
 
-		!error && submit();
+		!error && submit('post');
 	};
 
-	const submit = async () => {
-		saving = true;
+	const submit = async (method) => {
+		loading = true;
 		const resp = await fetch(`${import.meta.env.VITE_API_URL}/training`, {
-			method: 'post',
+			method: method,
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({ training })
 		});
-		saving = false;
+		loading = false;
 
 		if (resp.ok) {
 			const data = await resp.json();
@@ -36,64 +36,59 @@
 			}
 		}
 	};
-	let saving = false;
+
+	let loading = false;
 </script>
 
-<section>
-	<textarea placeholder="message" id="message" bind:value={training} disabled={saving} />
+<section class="base">
+	{#if loading}
+		<div class="blocker">Loading . . .</div>
+	{/if}
+	<textarea placeholder="message" id="message" bind:value={training} />
 	{#if error}
 		<span class="error">{error}</span>
 	{/if}
-	<button
-		on:click={() => {
-			validate();
-		}}
-		class:disabled={saving}
-	>
-		{#if saving}
-			Saving . . .
-		{:else}
+	<div class="buttons_area">
+		<button
+			on:click={() => {
+				validate();
+			}}
+		>
 			Save
-		{/if}
-	</button>
+		</button>
+		<button
+			on:click={() => {
+				submit('delete');
+			}}
+		>
+			Reset
+		</button>
+	</div>
 </section>
 
 <style>
 	section {
-		--var1: 20px;
-		--var2: 8px;
-
-		height: 100vh;
-		padding: var(--var1);
+		position: relative;
 	}
-
-	section {
+	.blocker {
 		display: flex;
-		flex-direction: column;
-		gap: var(--var2);
-	}
+		justify-content: center;
+		align-items: center;
 
-	textarea,
-	button {
-		border-radius: var(--var2);
-		border: 2px solid gray;
-		padding: var(--var1);
-	}
+		position: absolute;
+		inset: 0;
 
+		background-color: rgba(128, 128, 128, 0.9);
+		pointer-events: none;
+
+		font-size: large;
+	}
 	textarea {
-		resize: none;
 		height: 100%;
 	}
-	textarea:disabled {
-		opacity: 0.5;
-		pointer-events: none;
-	}
-	.disabled {
-		pointer-events: none;
-	}
-
-	button:hover {
-		background-color: rgb(193, 193, 193);
-		cursor: pointer;
+	.buttons_area {
+		display: flex;
+		justify-content: center;
+		gap: var(--var2);
 	}
 </style>

@@ -28,8 +28,36 @@ input:-webkit-autofill:active {
 	-webkit-text-fill-color: var(--accent1);
 }
 
+*{
+	--var1: 20px;
+	--var2: 8px;
+}
 
+
+.base {
+	display: flex;
+	flex-direction: column;
+	gap: var(--var2);
+
+	height: 100vh;
+	padding: var(--var1) 0;
+
+}
 
 .error {
 	color: red;
+}
+
+textarea,
+button {
+	border-radius: var(--var2);
+	border: 2px solid gray;
+	padding: var(--var1);
+
+	resize: none;
+}
+
+button:hover {
+	background-color: rgb(193, 193, 193);
+	cursor: pointer;
 }

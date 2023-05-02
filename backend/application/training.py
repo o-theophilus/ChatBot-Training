@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from . import db, now
+from . import db
 from uuid import uuid4
 from .brain import build_brain
 
@@ -10,8 +10,8 @@ bp = Blueprint("training", __name__)
 def training_template(training):
     return {
         "key": uuid4().hex,
-        "created_at": now(),
-        "updated_at": now(),
+        "created_at": db.now(),
+        "updated_at": db.now(),
         "type": "training",
         "data": training,
     }
@@ -22,7 +22,6 @@ def training_schema(t):
         "key": t["key"],
         "created_at": t["created_at"],
         "updated_at": t["updated_at"],
-        # "type": t["type"],
         "data": t["data"]
     }
 
@@ -64,7 +63,7 @@ def post():
     for row in data:
         if row["type"] == "training":
             row["data"] = request.json["training"]
-            row["updated_at"] = now()
+            row["updated_at"] = db.now()
             training = row
             break
 
@@ -78,30 +77,33 @@ def post():
     })
 
 
-@bp.get("/fix")
-def fix():
+@bp.delete("/training")
+def reset():
+
     data = db.data()
 
-    training = ""
+    training = None
+    reset = None
     for row in data:
         if row["type"] == "training":
-            training = f"""{training}
-question: {row["question"]}
-answer: {row["answer"]}
-            """
+            training = row
+        elif row["type"] == "reset":
+            reset = row
+        if training and reset:
+            break
 
-    print("#"*80)
-    print("#"*80)
-    print(training)
-    # if not training:
-    #     training = training_template(
-    #         request.json["training"]
-    #     )
-    #     data.append(training)
+    if not training or not reset:
+        return jsonify({
+            "status": 401,
+            "message": "invalid request"
+        })
 
-    # db.add(training)
+    training["data"] = reset["data"]
+    db.add(training)
+    build_brain(data)
 
     return jsonify({
         "status": 200,
         "message": "successful",
+        "training": training
     })

@@ -1,9 +1,8 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 
-from .api import bp as api
-from .api.chat import bp as chat
-from .api.training import bp as training
+from .chat import bp as chat
+from .training import bp as training
 
 
 def create_app(config_file="config.py"):
@@ -11,7 +10,13 @@ def create_app(config_file="config.py"):
     app.config.from_pyfile(config_file)
     CORS(app)
 
-    app.register_blueprint(api)
+    @app.route("/")
+    def index():
+        return jsonify({
+            "status": 200,
+            "message": "Welcome to Chatbot"
+        })
+
     app.register_blueprint(chat)
     app.register_blueprint(training)
 

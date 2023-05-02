@@ -1,5 +1,6 @@
 from flask import current_app
 from deta import Deta
+from datetime import datetime, timedelta
 
 
 def base():
@@ -32,3 +33,8 @@ def add(x):
 
 def add_many(x):
     return base().put_many(x)
+
+
+def now(day=0):
+    return (datetime.now() + timedelta(days=1) * day).replace(
+        microsecond=0).isoformat()

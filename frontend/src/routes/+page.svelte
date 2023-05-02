@@ -58,9 +58,9 @@
 	};
 </script>
 
-<section>
+<section class="base">
 	<div class="chat_area">
-		<div class="scroller">
+		<div>
 			{#each history as h}
 				<div transition:fly|local={{ delay: 0, duration: 200, easing: bounceInOut, y: 100 }}>
 					<Boubble role={h.role}>
@@ -75,7 +75,7 @@
 		{#if error}
 			<span class="error">{error}</span>
 		{/if}
-		<div class="user_input">
+		<div class="input_area">
 			<textarea
 				placeholder="message"
 				id="message"
@@ -97,24 +97,10 @@
 </section>
 
 <style>
-	section {
-		--var1: 20px;
-		--var2: 8px;
-
-		height: 100vh;
-		padding: var(--var1);
-	}
-
-	section,
-	.message_area {
-		display: flex;
-		flex-direction: column;
-		gap: var(--var2);
-	}
-
 	.chat_area {
 		display: flex;
 		flex-direction: column-reverse;
+		/* flex-direction: column; */
 
 		border-radius: var(--var2);
 		height: 100%;
@@ -124,27 +110,18 @@
 		background-color: rgb(207, 207, 207);
 	}
 
-	.user_input {
+	.message_area {
+		display: flex;
+		flex-direction: column;
+		gap: var(--var2);
+	}
+
+	.input_area {
 		display: flex;
 		gap: var(--var2);
 	}
 
-	textarea,
-	button {
-		border-radius: var(--var2);
-		border: 2px solid gray;
-		padding: var(--var1);
-	}
-
 	textarea {
-		display: block;
-		resize: none;
 		width: 100%;
-		height: 120px;
-	}
-
-	button:hover {
-		background-color: rgb(193, 193, 193);
-		cursor: pointer;
 	}
 </style>

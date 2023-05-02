@@ -4,9 +4,8 @@ from llama_index import (
     LLMPredictor, PromptHelper, ServiceContext,
     StringIterableReader
 )
-# import llama_index as ll
 from langchain import OpenAI
-from . import db, now
+from . import db
 from uuid import uuid4
 
 
@@ -70,13 +69,13 @@ def build_brain(data=None):
     brain = db.get_brain(data)
 
     if brain:
-        brain["updated_at"] = now()
+        brain["updated_at"] = db.now()
         brain['data'] = brain_data
     else:
         brain = {
             "key": uuid4().hex,
-            "created_at": now(),
-            "updated_at": now(),
+            "created_at": db.now(),
+            "updated_at": db.now(),
             "type": "brain",
             "data": brain_data
         }

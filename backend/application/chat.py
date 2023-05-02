@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from llama_index import GPTSimpleVectorIndex
-from . import db, now
+from . import db
 from uuid import uuid4
 
 bp = Blueprint("chat", __name__)
@@ -38,8 +38,8 @@ chatbot: {response.response}
     if not learning:
         learning = {
             "key": uuid4().hex,
-            "created_at": now(),
-            "updated_at": now(),
+            "created_at": db.now(),
+            "updated_at": db.now(),
             "type": "learning",
             "data": f"""
 user: {request.json["message"]}
