@@ -34,3 +34,10 @@ content-type: application/json
 
 ###
 
+### fix
+get  https://chatbottraining-1-r6176790.deta.app/training HTTP/1.1
+content-type: application/json
+
+
+###
+

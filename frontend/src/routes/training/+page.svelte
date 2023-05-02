@@ -17,7 +17,7 @@
 
 	const submit = async () => {
 		saving = true;
-		const resp = await fetch(`${import.meta.env.VITE_API_URL}/training`, {
+		const resp = await fetch(`https://chatbottraining-1-r6176790.deta.app/training`, {
 			method: 'post',
 			headers: {
 				'Content-Type': 'application/json'
