@@ -39,6 +39,8 @@ def get():
 
     if not training:
         training = db.add(training_template(""))
+        data.append(training)
+        build_brain(data)
 
     return jsonify({
         "status": 200,
@@ -62,6 +64,7 @@ def post():
     for row in data:
         if row["type"] == "training":
             row["data"] = request.json["training"]
+            row["updated_at"] = now()
             training = row
             break
 

@@ -41,8 +41,8 @@
 
 <section>
 	<textarea placeholder="message" id="message" bind:value={training} disabled={saving} />
-	{#if error.message}
-		<span class="error">{error.message}</span>
+	{#if error}
+		<span class="error">{error}</span>
 	{/if}
 	<button
 		on:click={() => {
