@@ -1,4 +1,3 @@
-from flask import Blueprint
 
 from llama_index import (
     GPTSimpleVectorIndex,
@@ -8,8 +7,6 @@ from llama_index import (
 from langchain import OpenAI
 from . import db, now
 from uuid import uuid4
-
-bp = Blueprint("brain", __name__)
 
 
 def construct_index(data):

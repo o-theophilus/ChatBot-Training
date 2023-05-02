@@ -1,0 +1,6 @@
+llama-index
+langchain
+flask
+flask-cors
+python-dotenv
+deta
