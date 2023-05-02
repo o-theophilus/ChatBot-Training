@@ -44,7 +44,7 @@
 	{#if loading}
 		<div class="blocker">Loading . . .</div>
 	{/if}
-	<textarea placeholder="message" id="message" bind:value={training} />
+	<textarea placeholder="Information" bind:value={training} />
 	{#if error}
 		<span class="error">{error}</span>
 	{/if}
