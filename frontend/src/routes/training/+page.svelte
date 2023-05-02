@@ -3,26 +3,39 @@
 
 	export let data;
 
-	let training = data.training.data;
-	let error = '';
+	let form = {
+		training: data.training.data
+	};
+	let openai_api_key;
+	let error = {};
+	$: if (openai_api_key) {
+		error.openai_api_key = '';
+	} else {
+		error.openai_api_key = 'get key at: https://platform.openai.com/account/api-keys';
+	}
 
 	const validate = () => {
-		error = '';
-		if (!training) {
-			error = 'cannot be empty';
+		error = {};
+		if (!form.training) {
+			error.training = 'cannot be empty';
+		}
+		if (!openai_api_key) {
+			error.openai_api_key = 'cannot be empty';
 		}
 
-		!error && submit('post');
+		Object.keys(error).length === 0 && submit('post');
 	};
 
 	const submit = async (method) => {
+		form.openai_api_key = openai_api_key;
 		loading = true;
+		show_key = false;
 		const resp = await fetch(`${import.meta.env.VITE_API_URL}/training`, {
 			method: method,
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ training })
+			body: JSON.stringify(form)
 		});
 		loading = false;
 
@@ -30,24 +43,40 @@
 			const data = await resp.json();
 
 			if (data.status == 200) {
-				training = data.training.data;
+				form.training = data.training.data;
 			} else {
+				show_key = true;
 				error = data.message;
 			}
 		}
 	};
 
 	let loading = false;
+	let show_key = true;
 </script>
 
 <section class="base">
 	{#if loading}
 		<div class="blocker">Loading . . .</div>
 	{/if}
-	<textarea placeholder="Information" bind:value={training} />
-	{#if error}
-		<span class="error">{error}</span>
+	{#if show_key}
+		<label for="openai_api_key"> OpenAI API Key </label>
+		{#if error.openai_api_key}
+			<span class="error">{error.openai_api_key}</span>
+		{/if}
+		<input
+			id="openai_api_key"
+			type="text"
+			placeholder="OpenAI API Key"
+			bind:value={openai_api_key}
+		/>
+		<br />
 	{/if}
+	<label for="training"> Training Information </label>
+	{#if error.training}
+		<span class="error">{error.training}</span>
+	{/if}
+	<textarea id="training" placeholder="Training Information" bind:value={form.training} />
 	<div class="buttons_area">
 		<button
 			on:click={() => {

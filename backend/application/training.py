@@ -36,11 +36,6 @@ def get():
             training = row
             break
 
-    if not training:
-        training = db.add(training_template(""))
-        data.append(training)
-        build_brain(data)
-
     return jsonify({
         "status": 200,
         "message": "successful",
@@ -51,10 +46,17 @@ def get():
 @bp.post("/training")
 def post():
 
+    error = {}
+    if "openai_api_key" not in request.json or not request.json[
+            "openai_api_key"]:
+        error["openai_api_key"] = "cannot be empty"
     if "training" not in request.json or not request.json["training"]:
+        error["training"] = "cannot be empty"
+
+    if error != {}:
         return jsonify({
             "status": 201,
-            "message": "cannot be empty"
+            "message": error
         })
 
     data = db.data()
@@ -67,8 +69,17 @@ def post():
             training = row
             break
 
+    try:
+        build_brain(training["data"], data)
+    except Exception as e:
+        return jsonify({
+            "status": 201,
+            "message": {
+                "openai_api_key": str(e.last_attempt.exception())
+            }
+        })
+
     db.add(training)
-    build_brain(data)
 
     return jsonify({
         "status": 200,
@@ -79,6 +90,14 @@ def post():
 
 @bp.delete("/training")
 def reset():
+    if "openai_api_key" not in request.json or not request.json[
+            "openai_api_key"]:
+        return jsonify({
+            "status": 201,
+            "message": {
+                "openai_api_key": "cannot be empty"
+            }
+        })
 
     data = db.data()
 
@@ -92,15 +111,18 @@ def reset():
         if training and reset:
             break
 
-    if not training or not reset:
+    try:
+        build_brain(reset["data"], data)
+    except Exception as e:
         return jsonify({
-            "status": 401,
-            "message": "invalid request"
+            "status": 201,
+            "message": {
+                "openai_api_key": str(e.last_attempt.exception())
+            }
         })
 
     training["data"] = reset["data"]
     db.add(training)
-    build_brain(data)
 
     return jsonify({
         "status": 200,

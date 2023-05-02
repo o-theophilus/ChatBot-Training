@@ -7,6 +7,8 @@ from llama_index import (
 from langchain import OpenAI
 from . import db
 from uuid import uuid4
+from flask import request
+import os
 
 
 def construct_index(training_data):
@@ -21,6 +23,8 @@ def construct_index(training_data):
         max_chunk_overlap,
         chunk_size_limit=chunk_size_limit
     )
+
+    os.environ["OPENAI_API_KEY"] = request.json["openai_api_key"]
     llm_predictor = LLMPredictor(
         llm=OpenAI(
             temperature=0.5,
@@ -34,37 +38,16 @@ def construct_index(training_data):
         prompt_helper=prompt_helper
     )
 
-    # reader = download_loader("StringIterableReader")
-    # documents = reader().load_data(texts=[training_data])
-
-    # print("#"*80)
-    # print(dir(ll.StringIterableReader.load_data))
-    # print("#"*80)
-    # print(dir(ll.readers))
-    # print("#"*80)
     doc = StringIterableReader().load_data([training_data])
     index = GPTSimpleVectorIndex.from_documents(
         doc,
         service_context=service_context
     )
-    # index = GPTSimpleVectorIndex.from_documents(
-    #     documents,
-    #     service_context=service_context
-    # )
 
     return index.save_to_string()
 
 
-def build_brain(data=None):
-    if not data:
-        data = db.data()
-
-    training_data = ""
-    for row in data:
-        if row["type"] == "training":
-            training_data = row["data"]
-            break
-
+def build_brain(training_data, data):
     brain_data = construct_index(training_data)
     brain = db.get_brain(data)
 

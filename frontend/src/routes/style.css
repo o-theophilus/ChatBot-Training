@@ -48,6 +48,7 @@ input:-webkit-autofill:active {
 	color: red;
 }
 
+input,
 textarea,
 button {
 	border-radius: var(--var2);
