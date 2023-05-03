@@ -113,6 +113,9 @@
 
 		font-size: large;
 	}
+	label {
+		color: gray;
+	}
 	textarea {
 		height: 100%;
 	}
