@@ -14,18 +14,6 @@
 		error.openai_api_key = 'get key at: https://platform.openai.com/account/api-keys';
 	}
 
-	const validate = () => {
-		error = {};
-		if (!form.training) {
-			error.training = 'cannot be empty';
-		}
-		if (!openai_api_key) {
-			error.openai_api_key = 'cannot be empty';
-		}
-
-		Object.keys(error).length === 0 && submit('post');
-	};
-
 	const submit = async (method) => {
 		form.openai_api_key = openai_api_key;
 		loading = true;
@@ -80,14 +68,27 @@
 	<div class="buttons_area">
 		<button
 			on:click={() => {
-				validate();
+				error = {};
+				if (!form.training) {
+					error.training = 'cannot be empty';
+				}
+				if (!openai_api_key) {
+					error.openai_api_key =
+						'cannot be empty. get key at: https://platform.openai.com/account/api-keys';
+				}
+				Object.keys(error).length === 0 && submit('post');
 			}}
 		>
-			Save
+			Train
 		</button>
 		<button
 			on:click={() => {
-				submit('delete');
+				error = {};
+				if (!openai_api_key) {
+					error.openai_api_key =
+						'cannot be empty. get key at: https://platform.openai.com/account/api-keys';
+				}
+				Object.keys(error).length === 0 && submit('delete');
 			}}
 		>
 			Reset

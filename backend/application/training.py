@@ -49,7 +49,8 @@ def post():
     error = {}
     if "openai_api_key" not in request.json or not request.json[
             "openai_api_key"]:
-        error["openai_api_key"] = "cannot be empty"
+        error["openai_api_key"] = "cannot be empty. \
+                get key at: https://platform.openai.com/account/api-keys"
     if "training" not in request.json or not request.json["training"]:
         error["training"] = "cannot be empty"
 
@@ -95,7 +96,8 @@ def reset():
         return jsonify({
             "status": 201,
             "message": {
-                "openai_api_key": "cannot be empty"
+                "openai_api_key": "cannot be empty. \
+                get key at: https://platform.openai.com/account/api-keys"
             }
         })
 
